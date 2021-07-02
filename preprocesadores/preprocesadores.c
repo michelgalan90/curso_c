@@ -7,7 +7,7 @@
 #include <stdlib.h> 
 */
 
-#define PI 3.14.16; //Macro
+#define PI 3.1416 //Macro, los macro no llevan ;
 
 int y = 5; //Variable global
 
@@ -15,6 +15,10 @@ int main(){
 	int x = 10; // Variable local
 	
 	int suma = 0;
+	
+	suma = PI + x;
+	
+	printf("La suma es: %i", suma);
 	
 	return 0;
 }
