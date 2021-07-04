@@ -22,6 +22,8 @@ int main(){
 
     printf("The max number using ternary is: %d\n", max);
 
+    printf("The size of max: %d", sizeof(max));
+
     return 0;
 
 }
