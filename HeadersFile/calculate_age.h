@@ -1,0 +1,1 @@
+int calcularEdad(int ano);
