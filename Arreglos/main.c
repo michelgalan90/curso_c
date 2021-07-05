@@ -15,5 +15,13 @@ int main()
 
     printf("%d", numeros2[5]);
 
+    const int TAMANO = 5;
+    int numeros3[TAMANO];
+
+    int prices[5] = {1, 2, 3, 4, 5};
+    prices[0] = 10;
+    prices[1] = 25;
+    prices[4] = -50;
+
     return 0;
 }
