@@ -16,5 +16,12 @@ int main(){
 
     printf("Ahora los nombres son: %s\n", nombre);
 
+    char tito[100];
+
+
+    sprintf(tito, "Hola pollito %s %i", "pollito", 25);
+
+    printf("%s", tito);
+
     return 0;
 }

@@ -7,7 +7,7 @@
 #include <stdlib.h> 
 */
 
-#define PI 3.1416 //Macro, los macro no llevan ;
+#define PI 3.1416 //Symbolic constants, los macro no llevan ;
 
 int y = 5; //Variable global
 
