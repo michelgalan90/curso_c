@@ -22,6 +22,13 @@ typedef struct{
     Telefono* telefono;
 } Cliente;
 
+int cantidadTel;
+
+/*
+agregar un contador que mida por 2 o 3 meses la corriente en kilowatts
+ano/mes/dia formato fecha
+tener 2 o tres meses*/
+
 static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
   if (tok->type == JSMN_STRING && (int)strlen(s) == tok->end - tok->start &&
       strncmp(json + tok->start, s, tok->end - tok->start) == 0) {
@@ -30,10 +37,8 @@ static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
   return -1;
 }
 
-int fillJson(char* usuario, char* f_actual, char* programa, long* cod_cli,
-        char* nom_cli, char* ape1_cli, char* ape2_cli){
-    
-    int cantidadTel;
+void fillJson(char* usuario, char* f_actual, char* programa, long* cod_cli,
+        char* nom_cli, char* ape1_cli, char* ape2_cli, char* telefonos){
 
     printf("Introduzca el usuario del cliente: \n");
     scanf("%s", usuario);
@@ -59,9 +64,34 @@ int fillJson(char* usuario, char* f_actual, char* programa, long* cod_cli,
     printf("Introduzca cuantos No. telefono tiene: \n");
     scanf("%d", &cantidadTel);
 
-return cantidadTel;
+    if(cantidadTel >= 1){
+            char tele[300];
+                for(int contador = 0; contador < cantidadTel; contador++){
+                    printf("Digite el telefono %d\n", contador + 1 );
+                    scanf("%s", tele);
+                    
+                    if(contador == 0){
+                        strcat(telefonos, "[");
+                        strcat(telefonos, "\"");
+                        strcat(telefonos, tele);
+                        strcat(telefonos, "\"");
+                    }
+                    
+                    if(contador>0){
+                    
+                        strcat(telefonos, ",");
+                        strcat(telefonos, "\"");
+                        strcat(telefonos, tele);
+                        strcat(telefonos, "\""); 
+                        
+                    }
+                }
+            strcat(telefonos, "]");
+        }
+
+    //return cantidadTel;
         
-//    return cantidadTel;
+ //   return cantidadTel;
 }
 
 /*
@@ -104,17 +134,22 @@ int main(){
     long cod_cli;
     char nom_cli[21];
     char ape1_cli[21];
-    char ape2_cli[21];
-
-    Cliente cliente;
+    char ape2_cli[21];    
+   
    // char numTelefono[20];
 
-    int cantidadTelefono;
+   // int cantidadTelefono;
 
-    cantidadTelefono = fillJson(usuario, f_actual, programa, &cod_cli, nom_cli, ape1_cli, ape2_cli);
+  //  cantidadTelefono = fillJson(usuario, f_actual, programa, &cod_cli, nom_cli, ape1_cli, ape2_cli);
+    fillJson(usuario, f_actual, programa, &cod_cli, nom_cli, ape1_cli, ape2_cli, telefonos);
+
+    Telefono* teles;
+
+    Cliente cliente;
 
 
-     if(cantidadTelefono >= 1){
+   // cliente.telefono = teles;
+   /*  if(cantidadTelefono >= 1){
             char tele[300];
                 for(int contador = 0; contador < cantidadTelefono; contador++){
                     printf("Digite el telefono %d\n", contador + 1 );
@@ -138,6 +173,7 @@ int main(){
                 }
             strcat(telefonos, "]");
         }
+     */
   //  fillPhone(telefonos, cantidadTelefono);
            
 
@@ -177,10 +213,7 @@ int main(){
     jsmntok_t t[120];
     jsmn_init(&parser);
 
-  
-
     int resultado = jsmn_parse(&parser, JSON_STRING, strlen(JSON_STRING), t, sizeof(t)/sizeof(t[0]));
-
    
     if(resultado < 0){
         printf("Failed to parse JSON: %d\n", resultado);
@@ -190,9 +223,8 @@ int main(){
         printf("Object expected\n");
         return 1;
     }
-
     
-
+    
     int i;
 
     for (i = 1; i < resultado; i++) {
@@ -235,19 +267,19 @@ int main(){
         } 
         else if(jsoneq(JSON_STRING, &t[i], "nom_cli") == 0){
                /* We may use strndup() to fetch string value */
-            printf("- nom_cli: %.*s\n", t[i + 1].end - t[i + 1].start,
+            printf("nom_cli: %.*s\n", t[i + 1].end - t[i + 1].start,
                     JSON_STRING + t[i + 1].start);
             i++;
         }  
         else if(jsoneq(JSON_STRING, &t[i], "ape1_cli") == 0){
                /* We may use strndup() to fetch string value */
-            printf("- ape1_cli: %.*s\n", t[i + 1].end - t[i + 1].start,
+            printf("ape1_cli: %.*s\n", t[i + 1].end - t[i + 1].start,
                     JSON_STRING + t[i + 1].start);
             i++;
         } 
         else if(jsoneq(JSON_STRING, &t[i], "ape2_cli") == 0){
                /* We may use strndup() to fetch string value */
-            printf("- ape2_cli: %.*s\n", t[i + 1].end - t[i + 1].start,
+            printf("ape2_cli: %.*s\n", t[i + 1].end - t[i + 1].start,
                     JSON_STRING + t[i + 1].start);
             i++;
         }  
@@ -255,13 +287,13 @@ int main(){
            
         else if (jsoneq(JSON_STRING, &t[i], "telefonos") == 0) {
                 int j;
-                printf("- telefonos:\n");
+                printf("telefonos:\n");
                 if (t[i + 1].type != JSMN_ARRAY) {
                     continue; /* We expect groups to be an array of strings */
                 }
                 for (j = 0; j < t[i + 1].size; j++) {
                     jsmntok_t *g = &t[i + j + 2];
-                    printf("  * %.*s\n", g->end - g->start, JSON_STRING + g->start);
+                    printf("        * %.*s\n", g->end - g->start, JSON_STRING + g->start);
                 }
             i += t[i + 1].size + 1;
         }
